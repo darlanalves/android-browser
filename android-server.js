@@ -14,19 +14,14 @@ http.createServer(handleRequest).listen(PORT);
 function handleRequest(request, response) {
 	var servePublic = ecstatic({
 		handleError: false,
-		root: __dirname + '/public'
-	});
-
-	var serveVendor = ecstatic({
-		handleError: false,
-		root: __dirname + '/vendor'
+		root: __dirname + '/client'
 	});
 
 	var serveApi = function(request, response, next) {
 		var urlInfo = URLParser.parse(request.url);
 
 		if (request.url === '/' || request.url === '') {
-			fs.createReadStream('public/index.html').pipe(response);
+			fs.createReadStream('client/index.html').pipe(response);
 			return;
 		}
 
@@ -67,13 +62,10 @@ function handleRequest(request, response) {
 
 	serveApi(request, response, function() {
 		servePublic(request, response, function() {
-			serveVendor(request, response, function() {
-				response.writeHead(404);
-				response.end();
-			});
+			response.writeHead(404);
+			response.end();
 		});
 	});
 }
-
 
 console.log('Listening on ' + PORT);
