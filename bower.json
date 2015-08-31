@@ -1,0 +1,19 @@
+{
+  "name": "android-on-browser",
+  "version": "0.0.0",
+  "authors": [
+    "Darlan Alves <me@darlanalv.es>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  }
+}
