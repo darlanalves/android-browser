@@ -19,7 +19,11 @@ $(function() {
 	var swipeStart = null;
 
 	function mouseDown(event) {
-		if (event.ctrlKey && event.which === 1) {
+		// Ctrl + Left click OR Midlle Click
+		var swipe = event.ctrlKey && event.which === 1 ||
+			event.which === 2;
+
+		if (swipe) {
 			swipeStart = {
 				point: getEventCoordinates(event),
 				time: new Date()
@@ -28,7 +32,7 @@ $(function() {
 	}
 
 	function mouseUp(event) {
-		if (event.which !== 1) return;
+		if (event.which !== 1 && event.which !== 2) return;
 
 		var point = getEventCoordinates(event);
 
