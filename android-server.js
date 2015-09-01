@@ -10,14 +10,19 @@ var droidServer = new AndroidServer();
 
 http.createServer(handleRequest).listen(PORT);
 
-var serveStatic = ecstatic({
+var serveClient = ecstatic({
 	handleError: false,
 	root: __dirname + '/client'
 });
 
+var serveShared = ecstatic({
+	handleError: false,
+	root: __dirname + '/shared'
+});
+
 var serveIndex = function(request, response, next) {
 	if (request.url === '/' || request.url === '') {
-		fs.createReadStream('client/index.html').pipe(bundle.response);
+		fs.createReadStream('client/index.html').pipe(response);
 		return;
 	}
 
@@ -30,22 +35,24 @@ function handleRequest(request, response, cb) {
 			droidServer.dispatch(request, response, next);
 		},
 
-		function(_, next) {
-			serveStatic(request, response, next);
+		function(next) {
+			serveClient(request, response, next);
 		},
 
-		function(_, next) {
+		function(next) {
+			serveShared(request, response, next);
+		},
+
+		function(next) {
 			serveIndex(request, response, next);
 		},
 
-		function(_, next) {
+		function(next) {
 			response.writeHead(404);
 			response.end();
-			next(null);
+			next(new Error('Not found'));
 		}
-	], function () {
-		cb();
-	});
+	], cb);
 }
 
 console.log('Listening on ' + PORT);

@@ -9,12 +9,28 @@ body {
 	background-color: #291919;
 }
 
-#screen {
+#frame {
 	width: 360px;
 	height: 640px;
+	position: relative;
 	background-color: white;
-	background-size: 100% 100%;
 	margin: 0 auto;
+}
+
+#canvas, #screen {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+#canvas {
+	z-index: 2;
+}
+
+#screen {
+	z-index: 3;
 }
 
 #toolbar {

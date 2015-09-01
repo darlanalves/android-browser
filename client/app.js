@@ -1,100 +1,65 @@
-/* globals $, AndroidClient */
+/* globals $ */
 $(function() {
 	'use strict';
 
-	var ZOOM = 2;
 	var autoUpdate = true;
-	var client = new AndroidClient();
-	client.setZoom(ZOOM);
 
 	var screenElement = $('#screen');
+	var canvasElement = document.getElementById('canvas');
 	var inputElement = $('#input-events');
 	var toggleAutoUpdateElement = $('#toggle-auto-update');
 
-	toggleAutoUpdateElement.on('click', toggleAutoUpdate);
+	var client = new window.Android.Client();
+	var display = new window.Android.Screen(canvasElement);
+	var touch = new window.Android.TouchArea(screenElement);
 
-	screenElement.on('contextmenu', rightClickReload);
-	screenElement.on('mousedown', mouseDown);
-	screenElement.on('mouseup', mouseUp);
+	display.setSource('/capture.png');
+	display.setSize(360, 640);
 
-	inputElement.on('keydown', keyDown)
-
-	var swipeStart = null;
-
-	function mouseDown(event) {
-		// Ctrl + Left click OR Midlle Click
-		var swipe = event.ctrlKey && event.which === 1 ||
-			event.which === 2;
-
-		if (swipe) {
-			swipeStart = {
-				point: getEventCoordinates(event),
-				time: new Date()
-			};
-		}
-	}
-
-	function mouseUp(event) {
-		if (event.which !== 1 && event.which !== 2) return;
-
-		var point = getEventCoordinates(event);
-
-		if (null === swipeStart) {
-			return sendClick(point);
-		}
-
-		var duration = new Date();
-		duration -= swipeStart.time;
-
-		sendSwipe(swipeStart.point, point, duration);
-		swipeStart = null;
-	}
-
-	function keyDown (event) {
-		event.preventDefault();
-		client.sendKey(event.keyCode).then(updateOnSuccess);
-	}
+	touch.on('swipe', sendSwipe);
+	touch.on('tap', sendTap);
+	touch.on('update', function() {
+		display.refresh();
+	});
 
 	function sendSwipe(start, end, duration) {
+		var zoom = display.getZoom();
+		start = getRealCoordinates(start, zoom);
+		end = getRealCoordinates(end, zoom);
+
 		client.swipe(start, end, duration).then(updateOnSuccess);
 	}
 
-	function sendClick(point) {
+	function sendTap(point) {
+		var zoom = display.getZoom();
+		point = getRealCoordinates(point, zoom);
+
 		client.tap(point).then(updateOnSuccess);
 	}
 
-	function updateOnSuccess () {
+	function updateOnSuccess() {
 		if (autoUpdate) {
-			updateScreen();
+			display.refresh();
 		}
 	}
 
-	function getEventCoordinates(event) {
-		var _ = screenElement.offset(),
-			offset = [_.left, _.top],
-			coord = [event.pageX, event.pageY];
+	toggleAutoUpdateElement.on('click', toggleAutoUpdate);
+	inputElement.on('keydown', keyDown);
 
-		return {
-			x: ~~(coord[0] - offset[0]),
-			y: ~~(coord[1] - offset[1])
-		};
-	}
-
-	function rightClickReload(event) {
+	function keyDown(event) {
 		event.preventDefault();
-		updateScreen();
+		client.sendKey(event.keyCode).then(updateOnSuccess);
 	}
 
 	function toggleAutoUpdate() {
 		autoUpdate = !autoUpdate;
 		toggleAutoUpdateElement.attr('checked', autoUpdate);
-		console.log('autoupdate', autoUpdate);
 	}
 
-	function updateScreen() {
-		var now = (new Date()).getTime();
-		screenElement.css('background-image', 'url(/capture.png?' + now + ')');
+	function getRealCoordinates(point, zoom) {
+		return {
+			x: point.x / zoom.x,
+			y: point.y / zoom.y
+		};
 	}
-
-	updateScreen();
 });
