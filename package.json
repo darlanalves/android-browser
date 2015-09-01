@@ -1,5 +1,5 @@
 {
-  "name": "android",
+  "name": "android-browser",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,8 +8,11 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "ecstatic": "^0.8.0",
-    "query-string": "^2.4.0"
+    "micro-router": "^0.1.1",
+    "query-string": "^2.4.0",
+    "run-waterfall": "^1.1.2"
   }
 }

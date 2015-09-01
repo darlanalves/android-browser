@@ -17,11 +17,6 @@ URLParser.parse = function parseUrl(url) {
 		urlData.protocol = 'http:';
 	}
 
-	if (urlData.pathname && !urlData.hostname) {
-		urlData.hostname = urlData.pathname;
-		urlData.pathname = null;
-	}
-
 	return {
 		url: nodeUrl.format(urlData),
 		options: params.options,
@@ -29,14 +24,13 @@ URLParser.parse = function parseUrl(url) {
 	};
 };
 
-var URLmatcher = /\/([^\?]+)(?:\?(.+))?/;
-var QSmatcher = /\/\?(.+)/;
+var URLmatcher = /([^\?]+)(?:\?(.+))?/;
+var QSmatcher = /\?(.+)/;
 
 function extractURLParams(URL) {
 	var match, requestedUrl, options;
 
 	URL = String(URL);
-
 	match = URL.match(URLmatcher);
 
 	if (match) {

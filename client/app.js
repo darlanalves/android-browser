@@ -8,6 +8,7 @@ $(function() {
 	client.setZoom(ZOOM);
 
 	var screenElement = $('#screen');
+	var inputElement = $('#input-events');
 	var toggleAutoUpdateElement = $('#toggle-auto-update');
 
 	toggleAutoUpdateElement.on('click', toggleAutoUpdate);
@@ -15,6 +16,8 @@ $(function() {
 	screenElement.on('contextmenu', rightClickReload);
 	screenElement.on('mousedown', mouseDown);
 	screenElement.on('mouseup', mouseUp);
+
+	inputElement.on('keydown', keyDown)
 
 	var swipeStart = null;
 
@@ -47,20 +50,23 @@ $(function() {
 		swipeStart = null;
 	}
 
+	function keyDown (event) {
+		event.preventDefault();
+		client.sendKey(event.keyCode).then(updateOnSuccess);
+	}
+
 	function sendSwipe(start, end, duration) {
-		client.swipe(start, end, duration).then(function() {
-			if (autoUpdate) {
-				updateScreen();
-			}
-		});
+		client.swipe(start, end, duration).then(updateOnSuccess);
 	}
 
 	function sendClick(point) {
-		client.tap(point).then(function() {
-			if (autoUpdate) {
-				updateScreen();
-			}
-		});
+		client.tap(point).then(updateOnSuccess);
+	}
+
+	function updateOnSuccess () {
+		if (autoUpdate) {
+			updateScreen();
+		}
 	}
 
 	function getEventCoordinates(event) {

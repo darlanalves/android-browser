@@ -45,6 +45,24 @@
 		});
 	};
 
+	AndroidClient.prototype.sendKey = function(keyCode) {
+		var params = {
+			key: keyCode
+		};
+
+		return new Promise(function(resolve, reject) {
+			$.get('/action/key', params)
+				.success(function() {
+					console.log('key', keyCode);
+					resolve();
+				})
+				.error(function(reason) {
+					console.log('key error', reason);
+					reject(reason);
+				});
+		});
+	};
+
 	AndroidClient.prototype.setZoom = function(factor) {
 		this.zoom = factor || 1;
 	};
