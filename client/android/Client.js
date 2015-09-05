@@ -29,6 +29,14 @@
 		return apiCall('/action/key', params);
 	};
 
+	Client.prototype.sendText = function(text) {
+		var params = {
+			sequence: text
+		};
+
+		return apiCall('/action/key', params);
+	};
+
 	function apiCall(url, params) {
 		return new Promise(function(resolve, reject) {
 			$.get(url, params).success(resolve).error(reject);

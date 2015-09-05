@@ -17,9 +17,11 @@ function sendKey(key) {
 
 function sendText(sequence) {
 	if (sequence.indexOf(' ') !== -1) {
-		// input text abc
-		return runCommand('input', 'text', sequence);
+		sequence = sequence.replace(/\s/g, '%s');
 	}
+
+	// input text abc
+	return runCommand('input', 'text', sequence);
 }
 
 function tap(x, y) {
@@ -44,7 +46,7 @@ function runCommand() {
 	}).stdout;
 }
 
-function createErrorStream (message) {
+function createErrorStream(message) {
 	var error = new stream.Readable();
 
 	error._read = function noop() {};
@@ -57,5 +59,6 @@ function createErrorStream (message) {
 module.exports = {
 	tap: tap,
 	sendKey: sendKey,
+	sendText: sendText,
 	swipe: swipe
 };

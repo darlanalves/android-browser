@@ -27,7 +27,6 @@ function initialize(router) {
 function dispatch(request, response, next) {
 	var url = URLParser.parse(request.url);
 	var options = url.options;
-	// console.log(url, options);
 
 	try {
 		/* jshint validthis: true */

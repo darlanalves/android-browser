@@ -47,7 +47,7 @@ body {
 #input-events {
 	float: right;
 	border: 0;
-	color: #333;
+	color: #eee;
 	background-color: rgba(255, 255, 255, 0.3);
 	padding: 2px .5em;
 }

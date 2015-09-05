@@ -2,12 +2,17 @@
 $(function() {
 	'use strict';
 
-	var autoUpdate = true;
+	var options = {
+		autoUpdate: true,
+		rawKeyboard: false
+	};
 
 	var screenElement = $('#screen');
 	var canvasElement = document.getElementById('canvas');
 	var inputElement = $('#input-events');
-	var toggleAutoUpdateElement = $('#toggle-auto-update');
+
+	makeOptionToggle('#toggle-auto-update', 'autoUpdate');
+	makeOptionToggle('#toggle-keyboard', 'rawKeyboard');
 
 	var client = new window.Android.Client();
 	var display = new window.Android.Screen(canvasElement);
@@ -38,22 +43,36 @@ $(function() {
 	}
 
 	function updateOnSuccess() {
-		if (autoUpdate) {
+		if (options.autoUpdate) {
 			display.refresh();
 		}
 	}
 
-	toggleAutoUpdateElement.on('click', toggleAutoUpdate);
 	inputElement.on('keydown', keyDown);
 
 	function keyDown(event) {
-		event.preventDefault();
-		client.sendKey(event.keyCode).then(updateOnSuccess);
-	}
+		if (options.rawKeyboard) {
+			event.preventDefault();
+			client.sendKey(event.keyCode).then(updateOnSuccess);
+			return;
+		}
 
-	function toggleAutoUpdate() {
-		autoUpdate = !autoUpdate;
-		toggleAutoUpdateElement.attr('checked', autoUpdate);
+		// Enter
+		if (event.keyCode === 13) {
+			event.preventDefault();
+
+			var text = inputElement.val();
+
+			if (text === '') {
+				client.sendKey(13).then(updateOnSuccess);
+				return;
+			}
+
+			client.sendText(text).then(function() {
+				inputElement.val('');
+				updateOnSuccess();
+			});
+		}
 	}
 
 	function getRealCoordinates(point, zoom) {
@@ -61,5 +80,16 @@ $(function() {
 			x: point.x / zoom.x,
 			y: point.y / zoom.y
 		};
+	}
+
+	function makeOptionToggle(selector, optionName) {
+		var element = $(selector);
+
+		element.attr('checked', Boolean(options[optionName]));
+		element.on('click', toggle);
+
+		function toggle() {
+			options[optionName] = Boolean(element.attr('checked'));
+		}
 	}
 });
