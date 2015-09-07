@@ -2,13 +2,12 @@
 
 var spawn = require('child_process').spawn;
 var KeyMapper = require('./KeyMapper');
-var stream = require('stream');
 
 function sendKey(key) {
 	var nativeCode = KeyMapper.toNative(key);
 
 	if (nativeCode === -1) {
-		return createErrorStream('Invalid key code');
+		return new Error('Invalid key code');
 	}
 
 	// input keyevent xx
@@ -16,6 +15,10 @@ function sendKey(key) {
 }
 
 function sendText(sequence) {
+	if (!sequence) {
+		return new Error('Invalid string');
+	}
+
 	if (sequence.indexOf(' ') !== -1) {
 		sequence = sequence.replace(/\s/g, '%s');
 	}
@@ -44,16 +47,6 @@ function runCommand() {
 		cwd: './',
 		env: process.env
 	}).stdout;
-}
-
-function createErrorStream(message) {
-	var error = new stream.Readable();
-
-	error._read = function noop() {};
-	error.push(message);
-	error.push(null);
-
-	return error;
 }
 
 module.exports = {

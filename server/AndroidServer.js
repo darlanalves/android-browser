@@ -69,14 +69,19 @@ function actionKey(_, request, response, url, options) {
 	var keyCode = Number(options.key) || 0,
 		sequence = options.sequence || '';
 
-	if (!keyCode) {
-		response.writeHead(400);
-		response.end('Invalid key');
-	}
+	var result;
 
 	if (sequence) {
-		Events.sendText(sequence).pipe(response);
+		result = Events.sendText(sequence);
 	} else {
-		Events.sendKey(keyCode).pipe(response);
+		result = Events.sendKey(keyCode);
 	}
+
+	if (result instanceof Error) {
+		response.writeHead(400);
+		response.end(String(result));
+		return;
+	}
+
+	result.pipe(response);
 }
