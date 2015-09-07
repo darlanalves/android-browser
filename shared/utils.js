@@ -34,11 +34,11 @@
 		NewClass.prototype.constructor = NewClass;
 	}
 
-	function debounce(fn, delay) {
+	function debounce(fn, delay, self) {
 		var timer = null;
 
 		return function() {
-			var context = this,
+			var context = self || this,
 				args = arguments;
 
 			clearTimeout(timer);

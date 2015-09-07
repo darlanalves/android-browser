@@ -1,5 +1,6 @@
 (function() {
 	'use strict';
+	/* jshint validthis: true */
 	var Android = window.Android || (window.Android = {});
 
 	function Screen(rootElement) {

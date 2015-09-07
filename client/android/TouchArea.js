@@ -1,5 +1,6 @@
 (function() {
 	/* globals EventEmitter */
+	/* jshint validthis: true */
 	'use strict';
 	var Android = window.Android || (window.Android = {});
 
@@ -26,6 +27,7 @@
 		element.on('contextmenu', rightClickReload.bind(self));
 		element.on('mousedown', mouseDown.bind(self));
 		element.on('mouseup', mouseUp.bind(self));
+		element.on('mousewheel DOMMouseScroll', mouseScroll.bind(self));
 	}
 
 	function detach() {
@@ -61,6 +63,45 @@
 
 		this.emit('swipe', start.point, point, duration);
 		this.swipeStart = null;
+	}
+
+	var DELTA = 40;
+	var wheelDispatch = utils.debounce(function(self) {
+		var offset = wheelTracking.delta * DELTA;
+		var start = wheelTracking.start;
+
+		var end = {
+			x: start.x,
+			y: start.y + offset
+		};
+
+		self.emit('swipe', start, end, 500);
+
+		wheelTracking.delta = 0;
+		wheelTracking.start = null;
+	}, 500);
+
+	var wheelTracking = {
+		delta: 0,
+		start: null,
+		dispatch: wheelDispatch
+	};
+
+
+	function mouseScroll(event) {
+		if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+			// scroll up
+			wheelTracking.delta--;
+		} else {
+			// scroll down
+			wheelTracking.delta++;
+		}
+
+		if (!wheelTracking.start) {
+			wheelTracking.start = getEventCoordinates(this.$, event);
+			wheelTracking.dispatch(this);
+			return;
+		}
 	}
 
 	function getEventCoordinates(el, event) {

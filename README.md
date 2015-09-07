@@ -7,7 +7,7 @@ pipes the output on a node server. Now I can see what's on screen via adb.
 
 Just run `make serve` in a terminal and a node server will start on port 5000.
 
-Going to http://localhost:5000/ will show the phone screen and allow to interact with the phone
+Going to http://localhost:7000/ will show the phone screen and allow to interact with the phone
 using a mouse (tap and swipe) and a keyboard.
 
 ## Install
