@@ -91,10 +91,10 @@
 	function mouseScroll(event) {
 		if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
 			// scroll up
-			wheelTracking.delta--;
+			wheelTracking.delta++;
 		} else {
 			// scroll down
-			wheelTracking.delta++;
+			wheelTracking.delta--;
 		}
 
 		if (!wheelTracking.start) {
