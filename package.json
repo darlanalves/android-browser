@@ -11,7 +11,7 @@
   "devDependencies": {},
   "dependencies": {
     "ecstatic": "^0.8.0",
-    "micro-router": "^0.1.1",
+    "micro-router": "^0.2.0",
     "query-string": "^2.4.0",
     "run-waterfall": "^1.1.2"
   }
