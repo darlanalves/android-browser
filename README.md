@@ -20,9 +20,10 @@ For the main app you just need to run `npm install`.
 
 You will also need the `adb` binary available and the Android phone with USB Debugging enabled.
 
-If you don't have the latest adb app or the Android SDK, there's a tgz'ed adb binary in the `vendor` folder. This binary was copied from the Android SDK, in the version `1.0.32`.
+If you don't have the latest adb app or the Android SDK, there's a tgz'ed adb binary in the `vendor` folder. 
+This binary was copied from the Android SDK.
 
-More info about ADB [here](https://developer.android.com/sdk/installing/index.html)
+Or you can [download ADB from here](https://developer.android.com/studio/releases/platform-tools)
 
 To check if adb is okay, you can run `adb devices` in a terminal. The expected output is a list of devices and their states. The device must be listed as "device", otherwise it is not properly connected and authorized.
 
